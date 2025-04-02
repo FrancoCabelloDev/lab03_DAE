@@ -4,6 +4,9 @@ from django.forms import inlineformset_factory
 from django.db import transaction
 from .models import Exam, Question, Choice
 from .forms import ExamForm, QuestionForm, ChoiceFormSet
+from django.http import HttpResponseRedirect
+from django.urls import reverse
+from django.views.decorators.csrf import csrf_exempt
 
 def exam_list(request):
     """Vista para listar todos los exámenes"""
@@ -69,3 +72,21 @@ def question_create(request, exam_id):
         'question_form': question_form,
         'formset': formset,
     })
+
+def question_edit(request, question_id):
+    question = get_object_or_404(Question, id=question_id)
+
+    if request.method == 'POST':
+        form = QuestionForm(request.POST, instance=question)
+        if form.is_valid():
+            form.save()
+            return redirect('exam_detail', exam_id=question.exam.id)  # Redirige al detalle del examen
+    else:
+        form = QuestionForm(instance=question)
+
+    return render(request, 'question_edit.html', {'form': form, 'question': question})
+def question_delete(request, question_id):
+    question = get_object_or_404(Question, id=question_id)
+    exam_id = question.exam.id  # Guarda el ID del examen antes de eliminar la pregunta
+    question.delete()
+    return HttpResponseRedirect(reverse('exam_detail', args=[exam_id]))  # Redirige al examen

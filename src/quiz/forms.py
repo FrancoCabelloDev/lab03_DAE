@@ -31,3 +31,7 @@ class ChoiceForm(forms.ModelForm):
 ChoiceFormSet = forms.inlineformset_factory(
     Question, Choice, form=ChoiceForm, extra=4, can_delete=False
 )
+class QuestionForm(forms.ModelForm):
+    class Meta:
+        model = Question
+        fields = ['text']

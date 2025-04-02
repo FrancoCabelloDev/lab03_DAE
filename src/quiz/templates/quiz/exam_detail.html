@@ -27,7 +27,7 @@
                     </h2>
                     <div id="collapse{{ question.id }}" class="accordion-collapse collapse" data-bs-parent="#accordionQuestions">
                         <div class="accordion-body">
-                            <ul class="list-group">
+                            <ul class="list-group mb-3">
                                 {% for choice in question.choices.all %}
                                     <li class="list-group-item {% if choice.is_correct %}list-group-item-success{% endif %}">
                                         {{ choice.text }} {% if choice.is_correct %}<span class="badge bg-success">Correcta</span>{% endif %}
@@ -36,6 +36,13 @@
                                     <li class="list-group-item">No hay opciones para esta pregunta.</li>
                                 {% endfor %}
                             </ul>
+                            <div class="d-flex justify-content-end">
+                                <a href="{% url 'question_edit' question.id %}" class="btn btn-warning btn-sm me-2">Editar</a>
+                                <form action="{% url 'question_delete' question.id %}" method="post" onsubmit="return confirm('¿Estás seguro de que deseas eliminar esta pregunta?');">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
+                                </form>
+                            </div>
                         </div>
                     </div>
                 </div>
