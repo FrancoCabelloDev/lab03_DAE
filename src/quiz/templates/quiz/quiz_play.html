@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block title %}Jugar {{ exam.title }}{% endblock %}
+
+{% block content %}
+<h1>{{ exam.title }}</h1>
+<form method="POST">
+    {% csrf_token %}
+    <div class="questions">
+        {% for question in questions %}
+            <div class="question">
+                <h3>{{ question.text }}</h3>
+                {% for choice in question.choices.all %}
+                    <div class="choice">
+                        <label>
+                            <input type="radio" name="question_{{ question.id }}" value="{{ choice.id }}">
+                            {{ choice.text }}
+                        </label>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endfor %}
+    </div>
+    <button type="submit">Enviar Respuestas</button>
+</form>
+{% endblock %}

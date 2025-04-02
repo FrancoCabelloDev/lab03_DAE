@@ -85,8 +85,32 @@ def question_edit(request, question_id):
         form = QuestionForm(instance=question)
 
     return render(request, 'question_edit.html', {'form': form, 'question': question})
+
 def question_delete(request, question_id):
     question = get_object_or_404(Question, id=question_id)
     exam_id = question.exam.id  # Guarda el ID del examen antes de eliminar la pregunta
     question.delete()
     return HttpResponseRedirect(reverse('exam_detail', args=[exam_id]))  # Redirige al examen
+
+def quiz_play(request, exam_id):
+    exam = Exam.objects.get(id=exam_id)
+    questions = exam.questions.all()  # ✅ Esto es lo correcto
+
+
+    if request.method == "POST":
+        score = 0
+        total_questions = questions.count()
+        for question in questions:
+            selected_choice_id = request.POST.get(f'question_{question.id}')
+            if selected_choice_id:
+                selected_choice = Choice.objects.get(id=selected_choice_id)
+                if selected_choice.is_correct:
+                    score += 1
+
+        return render(request, "quiz/quiz_result.html", {
+            "exam": exam,
+            "score": score,
+            "total_questions": total_questions
+        })
+
+    return render(request, "quiz/quiz_play.html", {"exam": exam, "questions": questions})

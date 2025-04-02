@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block title %}Resultados - {{ exam.title }}{% endblock %}
+
+{% block content %}
+<h1>Resultados de {{ exam.title }}</h1>
+<p>Tu puntuación: <strong>{{ score }}</strong> de <strong>{{ total_questions }}</strong></p>
+
+<a href="{% url 'exam_list' %}" class="btn btn-secondary">Volver a la lista de exámenes</a>
+<a href="{% url 'quiz_play' exam.id %}" class="btn btn-primary">Intentar de nuevo</a>
+{% endblock %}
